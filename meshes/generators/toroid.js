@@ -48,6 +48,6 @@ function toroid(name,majorRadius, minorRadius, majorSegments, minorSegments) {
             indices.push(second, second + 1, first + 1);
         }
     }
-    return new Mesh(name, new Float32Array(vertices), new Uint16Array(indices), new Float32Array(uvs), new Float32Array(normals), new Float32Array(colors));
+    return new Mesh(name, new Float32Array(vertices), new Uint32Array(indices), new Float32Array(uvs), new Float32Array(normals), new Float32Array(colors));
 }
 export {toroid};

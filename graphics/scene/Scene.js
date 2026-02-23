@@ -18,6 +18,13 @@ class Scene{
         this.bufferManager = new BufferManager();
         this.meshManager = meshManager;
         this.projectionMatrix = mat4.create();
+        
+        // Enable extension for 32-bit indices
+        this.uintExtension = gl.getExtension('OES_element_index_uint');
+        if (!this.uintExtension) {
+            console.warn('OES_element_index_uint extension not supported. Large meshes (>65k vertices) will not work.');
+        }
+        
         if(gl.canvas instanceof HTMLCanvasElement){
             mat4.perspective(this.projectionMatrix, 45 * Math.PI / 180, gl.canvas.width / gl.canvas.height, 0.1, 100.0);
         }        
@@ -123,7 +130,7 @@ function drawObject(gl, object, shaderManager, bufferManager, meshManager, proje
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferBundle.indexBuffer);
     
-    gl.drawElements(gl.TRIANGLES, bufferBundle.indexCount, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(gl.TRIANGLES, bufferBundle.indexCount, gl.UNSIGNED_INT, 0);
 
     
 }

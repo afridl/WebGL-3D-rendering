@@ -4,7 +4,7 @@ class Mesh{
      * 
      * @param {string} name
      * @param {Float32Array} vertices 
-     * @param {Uint16Array} indices 
+     * @param {Uint32Array} indices 
      * @param {Float32Array} uvs 
      * @param {Float32Array} normals 
      * @param {Float32Array} colors

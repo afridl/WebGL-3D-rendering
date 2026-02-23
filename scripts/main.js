@@ -27,7 +27,7 @@ async function main(){
     }
 
     const meshManager = new MeshManager();
-    const toroidMesh = toroid("toroid", 1, 0.3, 32, 16);
+    const toroidMesh = toroid("toroid", 1, 0.3, 64, 32);
     meshManager.addMesh(toroidMesh.name, toroidMesh);
     const currentScene = new Scene(gl, meshManager);
     const toroidObject = new SceneObject("toroid", [0,0,-6], [0,0,0,1], [1,1,1], "basic");

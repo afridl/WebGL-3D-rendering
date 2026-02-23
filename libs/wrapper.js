@@ -9,4 +9,4 @@ export {
   vec2,
   vec3,
   vec4,
-} from "./gl-matrix-master/dist/esm/index.js";
+} from "./gl-matrix-master/src/index.js";

@@ -32,10 +32,15 @@ class BufferManager{
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, mesh.colors, gl.STATIC_DRAW);
 
+        const normalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, mesh.normals, gl.STATIC_DRAW);
+
         const bufferBundle = {
             vertexBuffer,
             indexBuffer,
             colorBuffer,
+            normalBuffer,
             indexCount: mesh.indices.length,
         };
 

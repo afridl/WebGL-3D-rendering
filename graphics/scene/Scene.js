@@ -83,6 +83,7 @@ function drawObject(gl, object, shaderManager, bufferManager, meshManager, proje
     const attributeBindings = {
         aVertexPosition: { buffer: bufferBundle.vertexBuffer, size: 3 },
         aVertexColor: { buffer: bufferBundle.colorBuffer, size: 4 },
+        aVertexNormal: { buffer: bufferBundle.normalBuffer, size: 3 },
     };
 
     for(let i = 0; i < shader.attributes.length; i++){

@@ -4,7 +4,7 @@ import { ShaderManager } from "../shaders/ShaderManager.js";
 import { BufferManager } from "./BufferManager.js";
 import { SceneObject } from "./SceneObject.js";
 import { MeshManager } from "../../meshes/MeshManager.js";
-import { mat4 } from "../../libs/wrapper.js";
+import { mat3, mat4 } from "../../libs/wrapper.js";
 
 class Scene{
     
@@ -18,6 +18,7 @@ class Scene{
         this.bufferManager = new BufferManager();
         this.meshManager = meshManager;
         this.projectionMatrix = mat4.create();
+        this.viewMatrix = mat4.create();
         
         // Enable extension for 32-bit indices
         this.uintExtension = gl.getExtension('OES_element_index_uint');
@@ -37,14 +38,14 @@ class Scene{
     }
 
     drawScene(shaderManager){
-        this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        this.gl.clearColor(0.1, 0.1, 0.5, 1.0);
         this.gl.clearDepth(1.0);
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.depthFunc(this.gl.LEQUAL);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
         for(let i = 0; i < this.objects.length; i++){
-            drawObject(this.gl, this.objects[i], shaderManager, this.bufferManager, this.meshManager, this.projectionMatrix);
+            drawObject(this.gl, this.objects[i], shaderManager, this.bufferManager, this.meshManager, this.projectionMatrix, this.viewMatrix, performance.now() / 1000);
         }
     }
     /**
@@ -54,7 +55,6 @@ class Scene{
         this.objects.push(object);
     }
     /**
-     * 
      * @param {SceneObject} object 
      */
     removeObject(object){
@@ -71,9 +71,10 @@ class Scene{
  * @param {BufferManager} bufferManager
  * @param {MeshManager} meshManager
  * @param {mat4} projectionMatrix
+ * @param {mat4} viewMatrix
  * @returns {void}
  */
-function drawObject(gl, object, shaderManager, bufferManager, meshManager, projectionMatrix){
+function drawObject(gl, object, shaderManager, bufferManager, meshManager, projectionMatrix, viewMatrix, deltaTime){
     //bind the object's mesh buffers and draw it
     const shader = shaderManager.getShader(object.shaderKey);
     if(!shader || !shader.program){
@@ -86,6 +87,9 @@ function drawObject(gl, object, shaderManager, bufferManager, meshManager, proje
     if(!bufferBundle){
         bufferBundle = bufferManager.addBuffers(object.meshKey, meshManager, gl);
     }
+
+    const normalMatrix = mat3.create();
+    mat3.normalFromMat4(normalMatrix, object.modelMatrix);
     
     const attributeBindings = {
         aVertexPosition: { buffer: bufferBundle.vertexBuffer, size: 3 },
@@ -116,15 +120,27 @@ function drawObject(gl, object, shaderManager, bufferManager, meshManager, proje
         const uniformName = shader.uniforms[i];
         const location = gl.getUniformLocation(shader.program, uniformName);
 
-        if(!location){
+        if(location === null){
             continue;
         }
 
-        if(uniformName === "uModelMatrix" || uniformName === "uModelViewMatrix"){
+        if(uniformName === "uModelMatrix"){
             gl.uniformMatrix4fv(location, false, object.modelMatrix);
+        }
+        if(uniformName === "uViewMatrix"){
+            gl.uniformMatrix4fv(location, false, viewMatrix);
         }
         if (uniformName === "uProjectionMatrix"){
             gl.uniformMatrix4fv(location, false, projectionMatrix);
+        }
+        if (uniformName === "uNormalMatrix"){
+            gl.uniformMatrix3fv(location, false, normalMatrix);
+        }
+        if (uniformName === "uLightDirection") {
+            gl.uniform3fv(location, [1.0, 0.0, 0.0]);
+        }
+        if (uniformName === "uLightColor") {
+            gl.uniform3fv(location, [1.0, 1.0, 1.0]);
         }
     }
 

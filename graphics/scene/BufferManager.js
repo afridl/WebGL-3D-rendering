@@ -1,4 +1,5 @@
 import { MeshManager } from "../../meshes/MeshManager.js";
+import { DynamicMesh } from "../../meshes/DynamicMesh.js";
 
 class BufferManager{
     constructor(){
@@ -50,6 +51,40 @@ class BufferManager{
 
     getBuffer(meshKey){
         return this.buffers.get(meshKey);
+    }
+    updateBuffer(meshKey, meshManager, gl){
+        const bufferBundle = this.buffers.get(meshKey);
+        if(!bufferBundle){
+            return;
+        }
+
+        const mesh = meshManager.getMesh(meshKey);
+        if(!mesh){
+            throw new Error(`Mesh not found for key: ${meshKey}`);
+        }
+        if (!mesh.dirty) {
+            return;
+        }
+        if(!(mesh instanceof DynamicMesh)){
+            return;
+        }
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferBundle.vertexBuffer);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, mesh.vertices);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferBundle.colorBuffer);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, mesh.colors);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferBundle.normalBuffer);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, mesh.normals);
+
+        // For now, we assume indices don't change. If they do, we would need to update the index buffer as well and use gl.bufferData instead.
+
+        //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferBundle.indexBuffer);
+        //gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, mesh.indices);
+
+        //bufferBundle.indexCount = mesh.indices.length;
+        mesh.markClean();
     }
 }
 

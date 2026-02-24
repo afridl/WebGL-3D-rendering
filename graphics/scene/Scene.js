@@ -3,6 +3,7 @@
 import { ShaderManager } from "../shaders/ShaderManager.js";
 import { BufferManager } from "./BufferManager.js";
 import { SceneObject } from "./SceneObject.js";
+import { DynamicObject } from "./DynamicObject.js";
 import { MeshManager } from "../../meshes/MeshManager.js";
 import { mat3, mat4 } from "../../libs/wrapper.js";
 
@@ -33,7 +34,14 @@ class Scene{
     //update all objects in the scene
     updateObjects(deltaTime){
         for(let i = 0; i < this.objects.length; i++){
-            this.objects[i].update(deltaTime);
+            if(this.objects[i] instanceof SceneObject){
+                this.objects[i].update?.(deltaTime);
+            }
+            if(this.objects[i] instanceof DynamicObject){
+                this.objects[i].update?.(deltaTime, this.meshManager);
+                this.bufferManager.updateBuffer(this.objects[i].meshKey, this.meshManager, this.gl);
+            }
+            
         }
     }
 
@@ -140,7 +148,7 @@ function drawObject(gl, object, shaderManager, bufferManager, meshManager, proje
             gl.uniform3fv(location, [1.0, 0.0, 0.0]);
         }
         if (uniformName === "uLightColor") {
-            gl.uniform3fv(location, [1.0, 1.0, 1.0]);
+            gl.uniform3fv(location, [1.0, 1.0, 0.9]);
         }
     }
 

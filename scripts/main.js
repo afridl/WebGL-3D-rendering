@@ -32,6 +32,7 @@ async function main(){
     const currentScene = new Scene(gl, meshManager);
     const toroidObject = new SceneObject("toroid", [0,0,-6], [0,0,0,1], [1,1,1], "basic");
     currentScene.addObject(toroidObject);
+    // TODO: instantiate and render a new DynamicObject - setup deformations with anonymous function in its update() (call mesh from meshManager and meshUpdate(fn, dt, gl))
     const shaderManager = new ShaderManager();
     await shaderManager.addShader(gl, "basic", "./vshader.glsl", "./fshader.glsl");
     console.log("initialized shaders and scene, starting render loop");

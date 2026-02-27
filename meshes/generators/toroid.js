@@ -1,3 +1,4 @@
+import { DynamicMesh } from "../DynamicMesh.js";
 import {Mesh} from "../Mesh.js";
 
 /**
@@ -7,9 +8,10 @@ import {Mesh} from "../Mesh.js";
  * @param {number} minorRadius 
  * @param {number} majorSegments 
  * @param {number} minorSegments 
+ * @param {boolean} [dynamic=false]
  * @returns 
  */
-function toroid(name,majorRadius, minorRadius, majorSegments, minorSegments) {
+function toroid(name,majorRadius, minorRadius, majorSegments, minorSegments, dynamic = false) {
     var vertices = [];
     var normals = [];
     var uvs = [];
@@ -47,6 +49,16 @@ function toroid(name,majorRadius, minorRadius, majorSegments, minorSegments) {
             indices.push(first, second, first + 1);
             indices.push(second, second + 1, first + 1);
         }
+    }
+    if (dynamic) {
+        return new DynamicMesh(
+            name,
+            new Float32Array(vertices),
+            new Uint32Array(indices),
+            new Float32Array(uvs),
+            new Float32Array(normals),
+            new Float32Array(colors)
+        );
     }
     return new Mesh(
         name, 

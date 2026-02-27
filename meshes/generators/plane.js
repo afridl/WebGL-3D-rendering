@@ -1,4 +1,5 @@
 import { Mesh } from "../Mesh.js";
+import { DynamicMesh } from "../DynamicMesh.js";
 
 /**
  *
@@ -7,9 +8,10 @@ import { Mesh } from "../Mesh.js";
  * @param {number} depth
  * @param {number} widthSegments
  * @param {number} depthSegments
+ * @param {boolean} [dynamic=false]
  * @return {Mesh}
  */
-function plane(name, width, depth, widthSegments, depthSegments) {
+function plane(name, width, depth, widthSegments, depthSegments, dynamic = false) {
     const vertices = [];
     const normals = [];
     const uvs = [];
@@ -46,6 +48,16 @@ function plane(name, width, depth, widthSegments, depthSegments) {
             indices.push(a, c, b);
             indices.push(b, c, d);
         }
+    }
+    if (dynamic) {
+        return new DynamicMesh(
+            name,
+            new Float32Array(vertices),
+            new Uint32Array(indices),
+            new Float32Array(uvs),
+            new Float32Array(normals),
+            new Float32Array(colors)
+        );
     }
 
     return new Mesh(

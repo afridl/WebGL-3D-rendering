@@ -34,7 +34,7 @@ class Scene{
     //update all objects in the scene
     updateObjects(deltaTime){
         for(let i = 0; i < this.objects.length; i++){
-            if(this.objects[i] instanceof SceneObject){
+            if(this.objects[i] instanceof SceneObject && !(this.objects[i] instanceof DynamicObject)){
                 this.objects[i].update?.(deltaTime);
             }
             if(this.objects[i] instanceof DynamicObject){
@@ -57,13 +57,13 @@ class Scene{
         }
     }
     /**
-     * @param {SceneObject} object 
+     * @param {SceneObject | DynamicObject} object 
      */
     addObject(object){
         this.objects.push(object);
     }
     /**
-     * @param {SceneObject} object 
+     * @param {SceneObject | DynamicObject} object 
      */
     removeObject(object){
         const index = this.objects.indexOf(object);
@@ -74,7 +74,7 @@ class Scene{
 }
 /**
  * @param {WebGLRenderingContext} gl
- * @param {SceneObject} object 
+ * @param {SceneObject | DynamicObject} object 
  * @param {ShaderManager} shaderManager
  * @param {BufferManager} bufferManager
  * @param {MeshManager} meshManager
@@ -145,7 +145,7 @@ function drawObject(gl, object, shaderManager, bufferManager, meshManager, proje
             gl.uniformMatrix3fv(location, false, normalMatrix);
         }
         if (uniformName === "uLightDirection") {
-            gl.uniform3fv(location, [1.0, 0.0, 0.0]);
+            gl.uniform3fv(location, [1.0, 1.0, 1.0]);
         }
         if (uniformName === "uLightColor") {
             gl.uniform3fv(location, [1.0, 1.0, 0.9]);

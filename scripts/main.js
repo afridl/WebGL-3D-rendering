@@ -5,6 +5,7 @@ import { Scene } from "../graphics/scene/Scene.js";
 import { MeshManager } from "../meshes/MeshManager.js";
 import { SceneObject } from "../graphics/scene/SceneObject.js";
 import { plane } from "../meshes/generators/plane.js";
+import { DynamicObject } from "../graphics/scene/DynamicObject.js";
 
 
 
@@ -31,12 +32,12 @@ async function main(){
     const toroidMesh = toroid("toroid", 1, 0.3, 64, 32);
     meshManager.addMesh(toroidMesh.name, toroidMesh);
     const currentScene = new Scene(gl, meshManager);
-    const toroidObject = new SceneObject("toroid", [0,0,-6], [0,0,0,1], [1,1,1], "basic");
+    const toroidObject = new SceneObject("toroid", [0,1,-6], [0,0,0,1], [1,1,1], "basic");
     currentScene.addObject(toroidObject);
     
-    const planeMesh = plane("plane", 10, 10, 1, 1);
+    const planeMesh = plane("plane", 10, 10, 1, 1, true);
     meshManager.addMesh(planeMesh.name, planeMesh);
-    const planeObject = new SceneObject("plane", [0,-1,-6], [0,0,0,1], [5,5,5], "basic");
+    const planeObject = new DynamicObject("plane", [0,-1,-25], [0,0,0,1], [5,5,5], "basic");
     currentScene.addObject(planeObject);    
     
     const shaderManager = new ShaderManager();

@@ -4,6 +4,7 @@ import { ShaderManager } from "../graphics/shaders/ShaderManager.js";
 import { Scene } from "../graphics/scene/Scene.js";
 import { MeshManager } from "../meshes/MeshManager.js";
 import { SceneObject } from "../graphics/scene/SceneObject.js";
+import { plane } from "../meshes/generators/plane.js";
 
 
 
@@ -32,8 +33,14 @@ async function main(){
     const currentScene = new Scene(gl, meshManager);
     const toroidObject = new SceneObject("toroid", [0,0,-6], [0,0,0,1], [1,1,1], "basic");
     currentScene.addObject(toroidObject);
-    // TODO: instantiate and render a new DynamicObject - setup deformations with anonymous function in its update() (call mesh from meshManager and meshUpdate(fn, dt, gl))
+    
+    const planeMesh = plane("plane", 10, 10, 1, 1);
+    meshManager.addMesh(planeMesh.name, planeMesh);
+    const planeObject = new SceneObject("plane", [0,-1,-6], [0,0,0,1], [5,5,5], "basic");
+    currentScene.addObject(planeObject);    
+    
     const shaderManager = new ShaderManager();
+    
     await shaderManager.addShader(gl, "basic", "./vshader.glsl", "./fshader.glsl");
     console.log("initialized shaders and scene, starting render loop");
 
